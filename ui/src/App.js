@@ -1,7 +1,8 @@
 import logo from './logo.png';
 import './App.css';
 import { useState } from 'react';
-
+ import { ToastContainer, toast } from 'react-toastify';
+import { GetCommission } from './Api/commissionApi';
 function App() {
   const [formData, setFormData] = useState({
     localSalesCount: '',
@@ -23,31 +24,51 @@ function App() {
       [name]: value
     }));
   };
+  const validateInputs = () => {
+    const { localSalesCount, foreignSalesCount, averageSaleAmount } = formData;
+    return (
+      localSalesCount >= 0 &&
+      foreignSalesCount >= 0 &&
+      averageSaleAmount >= 0
+    );
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     
-    // TODO: Replace with actual API call to backend
-    setTimeout(() => {
-      // Mock calculation for now
-      const localCommission = parseFloat(formData.localSalesCount) * parseFloat(formData.averageSaleAmount) * 0.20;
-      const foreignCommission = parseFloat(formData.foreignSalesCount) * parseFloat(formData.averageSaleAmount) * 0.35;
-      const avalphaTechnologiesTotal = localCommission + foreignCommission;
-      
-      const competitorLocal = parseFloat(formData.localSalesCount) * parseFloat(formData.averageSaleAmount) * 0.02;
-      const competitorForeign = parseFloat(formData.foreignSalesCount) * parseFloat(formData.averageSaleAmount) * 0.0755;
-      const competitorTotal = competitorLocal + competitorForeign;
-      
-      setResults({
-        avalphaTechnologiesCommission: avalphaTechnologiesTotal.toFixed(2),
-        competitorCommission: competitorTotal.toFixed(2)
-      });
+    //validate inputs 
+    if (!validateInputs()) {
       setIsLoading(false);
-    }, 1000);
+      toast.error("Please enter valid sales data.");
+      return;
+    }
+
+    // TODO: Replace with actual API call to backend
+
+      try {
+        const commissionData=await GetCommission(formData); 
+        if(!commissionData){
+         toast.error("No commission data received from server.");
+          
+        }
+        setResults({
+          avalphaTechnologiesCommission: commissionData.avalphaTechnologiesCommissionAmount,
+          competitorCommission: commissionData.competitorCommissionAmount
+        });
+
+      } 
+      catch (error) {
+        toast.error(error.message || "Failed to fetch commission data.");
+      }
+      finally{
+        setIsLoading(false);
+      }
+   
   };
 
   return (
+   <>
     <div className="App">
       <header className="App-header">
         <div className="logo-container">
@@ -152,6 +173,8 @@ function App() {
         <p>&copy; 2025 Avalpha Technologies. All rights reserved.</p>
       </footer>
     </div>
+    <ToastContainer />
+   </>
   );
 }
 
