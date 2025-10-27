@@ -140,38 +140,19 @@ graph TB
 REACT_APP_API_URL=https://localhost:5000
 
 # Backend (appsettings.json)
-{
-  "Commission": {
-    "Avalpha": {
-      "Local": 0.20,
-      "Foreign": 0.35
-    }
+"Commission": {
+  "Avalpha": {
+    "Local": "0.20",
+    "Foreign": "0.35"
+  },
+  "Competitors":  {
+    "Local": "0.02",
+    "Foreign": "0.0755"
   }
+  
 }
 ```
 
-## Testing Strategy 🧪
 
-### Backend Testing
 
-* **Unit Tests**
-  - ✅ Commission calculations
-  - ✅ Input validation
-  - ✅ Configuration loading
 
-* **Integration Tests**
-  - 🔄 API endpoints
-  - 🔌 Database connections
-  - 🌐 CORS validation
-
-### Frontend Testing
-
-* **Component Tests**
-  - 🎯 Form validation
-  - 💫 Loading states
-  - 📊 Results display
-
-* **Integration Tests**
-  - 🔌 API communication
-  - 🚫 Error handling
-  - 🔄 State management
